@@ -1,0 +1,19 @@
+[project]
+name = "robot-face-sim"
+version = "0.1.0"
+description = "ESP32-S3 Robot Face Simulator - reference implementation"
+authors = [
+  { name="Robot Face Project", email="dev@example.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+  "pygame>=2.5.0",
+  "numpy>=1.26.0",
+  "sounddevice>=0.4.6",
+  "tomli>=2.0.1; python_version < '3.11'",
+]
+
+
+
+[project.scripts]
+robot-face-sim = "robot_face_sim.app.main:main"
