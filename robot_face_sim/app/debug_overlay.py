@@ -49,7 +49,7 @@ HELP_SECTIONS = [
         ("D", "Toggle debug"),
         ("F", "Force full frame"),
         ("W", "Trigger wakeword"),
-        (".", "Cycle warp (off/0.1/0.2)"),
+        (".", "Cycle warp (0→0.1→0.25→0.5→0.75→1.0→0)"),
         ("!", "Simulate loud noise"),
         ("ESC", "Quit"),
     ]),
@@ -82,6 +82,7 @@ class DebugOverlay:
         lines = [
             f"FPS: {fps:.1f}",
             f"State: {simulator.state_machine.current_state.name}",
+            f"Warp: {simulator.scheduler.base_state.rig.face_warp:.2f}",
             f"Frame time: {delta * 1000:.1f}ms",
             f"Render time: {render_time * 1000:.1f}ms",
             f"Dirty area: {metrics.dirty_area}px ({metrics.dirty_percent:.1f}%)",
