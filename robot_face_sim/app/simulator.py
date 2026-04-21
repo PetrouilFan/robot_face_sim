@@ -5,7 +5,7 @@ from dataclasses import replace
 from typing import Optional
 
 from ..config import Config
-from ..core import StateMachine, Scheduler, State, Event, EventType, FaceState
+from ..core import StateMachine, Scheduler, State, Event, EventType, FaceRigTransform, FaceState
 from ..core.clips import AnimationLibrary
 from ..core.idle_controller import IdleController
 from ..render.pygame_renderer import PygameRenderer
@@ -36,11 +36,12 @@ class Simulator:
         self.debug = DebugOverlay(self.config.debug)
         self.controls = Controls(self)
 
-        # Set neutral base eye shape
+        # Set neutral base eye shape with subtle curved-screen warp
         neutral = PRESETS["neutral_soft"]
         self.scheduler.base_state = FaceState(
             left=replace(neutral),
             right=replace(neutral),
+            rig=FaceRigTransform(face_warp=0.10),
         )
 
         self._setup_transitions()

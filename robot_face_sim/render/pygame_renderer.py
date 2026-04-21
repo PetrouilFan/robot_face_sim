@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import pygame
 from typing import Optional, Tuple
 
@@ -38,6 +39,19 @@ class PygameRenderer:
 
         self.font = pygame.font.SysFont("monospace", 10)
 
+        # Precompute barrel distortion coordinate grids
+        cx = self.width / 2.0
+        cy = self.height / 2.0
+        max_r = math.sqrt(cx * cx + cy * cy)
+        x_grid, y_grid = np.meshgrid(
+            np.arange(self.width, dtype=np.float32),
+            np.arange(self.height, dtype=np.float32),
+            indexing='ij',
+        )
+        self._warp_dx = (x_grid - cx).astype(np.float32)
+        self._warp_dy = (y_grid - cy).astype(np.float32)
+        self._warp_norm_r = (np.sqrt(self._warp_dx**2 + self._warp_dy**2) / max_r).astype(np.float32)
+
     def render_eye(
         self,
         surface: pygame.Surface,
@@ -64,6 +78,25 @@ class PygameRenderer:
         ys = [p[1] for p in offset_points]
 
         return Rect(min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys))
+
+    def _apply_barrel_distortion(self, warp: float) -> None:
+        """Apply barrel distortion to framebuffer. warp > 0 = bulge center (curved screen)."""
+        cx = self.width / 2.0
+        cy = self.height / 2.0
+
+        # For each output pixel, the source is at a closer radius (center magnified, edges compressed)
+        k = warp * 0.8
+        factor = (1.0 - k * self._warp_norm_r ** 2).astype(np.float32)
+
+        src_x = (cx + self._warp_dx * factor).astype(np.int32)
+        src_y = (cy + self._warp_dy * factor).astype(np.int32)
+
+        np.clip(src_x, 0, self.width - 1, out=src_x)
+        np.clip(src_y, 0, self.height - 1, out=src_y)
+
+        arr = pygame.surfarray.array3d(self.framebuffer)
+        result = arr[src_x, src_y]
+        pygame.surfarray.blit_array(self.framebuffer, result)
 
     def render(self, face: FaceState) -> Tuple[DisplayMetrics, float]:
         start_time = pygame.time.get_ticks()
@@ -128,7 +161,12 @@ class PygameRenderer:
             scaled_w, scaled_h,
         )
 
-        dirty_rects = self.dirty_tracker.update([rect1, rect2])
+        # Apply barrel distortion after rendering eyes
+        if rig.face_warp != 0.0:
+            self._apply_barrel_distortion(rig.face_warp)
+            dirty_rects = [Rect(0, 0, self.width, self.height)]
+        else:
+            dirty_rects = self.dirty_tracker.update([rect1, rect2])
 
         if self.config.force_full_frame:
             dirty_rects = [Rect(0, 0, self.width, self.height)]

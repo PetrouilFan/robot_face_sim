@@ -49,6 +49,7 @@ HELP_SECTIONS = [
         ("D", "Toggle debug"),
         ("F", "Force full frame"),
         ("W", "Trigger wakeword"),
+        (".", "Cycle warp (off/0.1/0.2)"),
         ("!", "Simulate loud noise"),
         ("ESC", "Quit"),
     ]),

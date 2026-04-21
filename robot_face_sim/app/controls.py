@@ -102,6 +102,15 @@ class Controls:
                 self.simulator.renderer.config.force_full_frame = (
                     not self.simulator.renderer.config.force_full_frame
                 )
+            elif event.key == pygame.K_PERIOD:
+                # Toggle warp: 0.0 -> 0.10 -> 0.20 -> 0.0
+                current = self.simulator.scheduler.base_state.rig.face_warp
+                if current < 0.01:
+                    self.simulator.scheduler.base_state.rig.face_warp = 0.10
+                elif current < 0.15:
+                    self.simulator.scheduler.base_state.rig.face_warp = 0.20
+                else:
+                    self.simulator.scheduler.base_state.rig.face_warp = 0.0
             elif event.key == pygame.K_SLASH or event.key == pygame.K_QUESTION:
                 self.simulator.debug.config.show_help = (
                     not self.simulator.debug.config.show_help

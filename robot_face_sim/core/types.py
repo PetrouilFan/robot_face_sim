@@ -71,6 +71,7 @@ class FaceRigTransform:
     face_scale: float = 1.0
     face_tilt: float = 0.0
     eye_gap: float = 1.0
+    face_warp: float = 0.0
 
 
 @dataclass
