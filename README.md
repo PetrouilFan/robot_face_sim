@@ -37,7 +37,7 @@ This codebase is the **reference implementation** for behavior and architecture,
 uv sync
 
 # Run
-uv run robot-face-sim
+uv run python main.py
 ```
 
 ## Controls
