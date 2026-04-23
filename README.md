@@ -82,22 +82,33 @@ All timing models, state machines, animation clips, and eye parameters will work
 
 ## Status
 
-✅ Core types and interfaces
-✅ State machine implementation
-✅ Timeline and clip engine
-✅ Pygame renderer
-✅ Dirty rectangle tracking
-✅ Basic eye rendering
-✅ Audio interface and fake backend
-✅ Wake word interface and fake backend
-✅ Debug overlay
-✅ Performance metrics
+| Feature | Status |
+|---------|--------|
+| Core types and interfaces | Done |
+| State machine implementation | Done |
+| Timeline and clip engine | Done |
+| Expression clips | Done |
+| Behavior pool system | Done |
+| IdleController with autonomous behaviors | Done |
+| Easing function library | Done |
+| Face rig transform layer | Done |
+| Barrel distortion (curved-screen) | Done |
+| Pygame renderer | Done |
+| Dirty rectangle tracking | Done |
+| Procedural eye contour generation | Done |
+| Eye shaping parameters | Done |
+| Audio interface and fake backend | Done |
+| Wake word interface and fake backend | Done |
+| Debug overlay | Done |
+| Performance metrics | Done |
 
-## Next Steps
+## Implemented Features
 
-1.  Implement all standard animation clips
-2.  Add behavior policy layer
-3.  Add proper audio processing with sounddevice
-4.  Integrate openWakeWord for desktop testing
-5.  Add test coverage for core logic
-6.  Begin Arduino port
+- Complete expression clip library (blink, double_blink, slow_blink, happy, surprised, angry, sad, confused, thinking, worried, sleep/wake cycles)
+- Behavior pool system with 3-tier scheduling (common micro-idles, occasional personality beats, rare "wow" moments)
+- IdleController for autonomous idle behaviors, auto-blinks, micro-pose shifts, and sleep state management
+- Easing function library (sine, cubic, elastic, back, bounce curves)
+- Face rig transforms (offset, tilt, scale, eye_gap)
+- Barrel distortion (face_warp) for curved-screen effect
+- Procedural eye contour generation with presets
+- Eye shaping parameters (top_cut, bottom_cut, corner raises, rotation, scale_x/y)
