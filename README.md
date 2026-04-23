@@ -1,19 +1,27 @@
 # Robot Face Simulator
 
-ESP32-S3 Robot Face Reference Implementation
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-This is a Python-first simulator and architecture prototype for an ESP32-S3 based robot face device with expressive eye animations, audio, and wake-word detection.
+A Python-first simulator and reference implementation for an ESP32-S3 based robot face device featuring expressive eye animations, audio processing, and wake-word detection.
 
-This codebase is the **reference implementation** for behavior and architecture, designed from day one to be ported cleanly to Arduino/C++ on real hardware.
+This codebase is designed from the ground up to be cleanly ported to Arduino/C++ on real hardware.
+
+## Table of Contents
+- [Architecture](#architecture)
+- [Hardware Target](#hardware-target)
+- [Quick Start](#quick-start)
+- [Controls](#controls)
+- [Features](#features)
+- [Display Realism](#display-realism)
 
 ## Architecture
 
 ### Core Design Principles
-1.  **Portable First**: All core logic is written exactly as it will run on ESP32-S3
-2.  **Clean Layers**: Strict separation between pure logic and platform adapters
-3.  **Hardware Realism**: Simulates actual display bandwidth, SPI constraints, and update patterns
-4.  **Parametric Animation**: No pre-rendered bitmaps, everything is procedural
-5.  **Minimal Dependencies**: Only pygame, numpy, sounddevice
+1. **Portable First**: All core logic is written exactly as it will run on ESP32-S3
+2. **Clean Layers**: Strict separation between pure logic and platform adapters
+3. **Hardware Realism**: Simulates actual display bandwidth, SPI constraints, and update patterns
+4. **Parametric Animation**: No pre-rendered bitmaps, everything is procedural
+5. **Minimal Dependencies**: Only pygame, numpy, sounddevice
 
 ### Layers
 | Module | Purpose | Port Status |
@@ -30,13 +38,17 @@ This codebase is the **reference implementation** for behavior and architecture,
 - INMP441 I2S microphone
 - MAX98357A I2S audio amplifier
 
-## Running the Simulator
+## Quick Start
 
 ```bash
+# Clone the repository
+git clone https://github.com/PetrouilFan/robot_face_sim.git
+cd robot_face_sim
+
 # Install dependencies
 uv sync
 
-# Run
+# Run the simulator
 uv run python main.py
 ```
 
@@ -52,7 +64,18 @@ uv run python main.py
 | `f` | Toggle full frame/dirty-rect |
 | `ESC` | Exit |
 
-## Display Realism Simulation
+## Features
+
+- **Expression System**: Complete clip library (blink, double blink, slow blink, happy, surprised, angry, sad, confused, thinking, worried, sleep/wake cycles)
+- **Autonomous Behaviors**: 3-tier behavior pool system (common micro-idles, occasional personality beats, rare moments) with weighted random selection
+- **Idle Controller**: Manages auto-blinks, micro-pose shifts, and sleep state transitions
+- **Easing Library**: Rich set of easing functions (sine, cubic, elastic, back, bounce)
+- **Face Rig Transforms**: Offset, tilt, scale, and eye gap transformations
+- **Barrel Distortion**: Curved-screen effect via configurable warp parameter
+- **Procedural Eye Rendering**: Dynamic contour generation with shape presets and parameters (top/bottom cut, corner raises, rotation, scale)
+- **Performance Metrics**: Dirty rectangle tracking, SPI transfer estimation, frame budget analysis
+
+## Display Realism
 
 This simulator accurately models:
 - Exact 240x240 pixel framebuffer
@@ -61,52 +84,8 @@ This simulator accurately models:
 - RGB565 pixel format constraints
 - Frame budget estimation for real hardware
 
-Metrics shown in debug overlay:
+Metrics shown in debug overlay (`d` key):
 - Dirty area in pixels and percentage
 - Estimated bytes transferred over SPI
 - Estimated transfer time in microseconds
 - Frame budget status indicator
-
-## Porting Notes
-
-### ESP32-S3 Arduino Port Plan
-1.  Copy **entire `core/` module verbatim** - this is pure portable logic
-2.  Replace pygame renderer with LovyanGFX implementation
-3.  Replace audio backend with ESP32 I2S driver
-4.  Replace wake word detector with ESP-SR / microWakeWord
-5.  Replace main loop with FreeRTOS tasks
-
-All timing models, state machines, animation clips, and eye parameters will work exactly the same on hardware.
-
-## Status
-
-| Feature | Status |
-|---------|--------|
-| Core types and interfaces | Done |
-| State machine implementation | Done |
-| Timeline and clip engine | Done |
-| Expression clips | Done |
-| Behavior pool system | Done |
-| IdleController with autonomous behaviors | Done |
-| Easing function library | Done |
-| Face rig transform layer | Done |
-| Barrel distortion (curved-screen) | Done |
-| Pygame renderer | Done |
-| Dirty rectangle tracking | Done |
-| Procedural eye contour generation | Done |
-| Eye shaping parameters | Done |
-| Audio interface and fake backend | Done |
-| Wake word interface and fake backend | Done |
-| Debug overlay | Done |
-| Performance metrics | Done |
-
-## Implemented Features
-
-- Complete expression clip library (blink, double_blink, slow_blink, happy, surprised, angry, sad, confused, thinking, worried, sleep/wake cycles)
-- Behavior pool system with 3-tier scheduling (common micro-idles, occasional personality beats, rare "wow" moments)
-- IdleController for autonomous idle behaviors, auto-blinks, micro-pose shifts, and sleep state management
-- Easing function library (sine, cubic, elastic, back, bounce curves)
-- Face rig transforms (offset, tilt, scale, eye_gap)
-- Barrel distortion (face_warp) for curved-screen effect
-- Procedural eye contour generation with presets
-- Eye shaping parameters (top_cut, bottom_cut, corner raises, rotation, scale_x/y)
