@@ -34,12 +34,10 @@ This codebase is the **reference implementation** for behavior and architecture,
 
 ```bash
 # Install dependencies
-uv venv
-source .venv/bin/activate
-uv pip install -e .
+uv sync
 
 # Run
-robot-face-sim
+uv run robot-face-sim
 ```
 
 ## Controls
